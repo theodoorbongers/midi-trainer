@@ -1,0 +1,31 @@
+.app {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: hsl(120, 5%, 30%);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.wakeLocked {
+  background-color: hsl(120, 5%, 60%);
+}
+
+.middleRow {
+  display: flex;
+  flex: 1 1 100%;
+}
+
+.main {
+  flex: 1 1 100%;
+}
+
+.status {
+  flex: 1 1 0%;
+}
+
+.keyboard {
+  flex: 1 1 0%;
+}

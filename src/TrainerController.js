@@ -1,12 +1,13 @@
-import { midi$ } from './midi/midi$';
+import { midiInputs$ } from './midi/midi$';
 import { parse } from './midi/parse';
 import { pressedKeys } from './midi/pressedKeys';
 import { defer, of, merge, BehaviorSubject, from } from 'rxjs';
-import { first, switchMap, share, repeat, publish } from 'rxjs/operators';
+import { first, switchMap, share, repeat, publish, mergeMap, scan, map } from 'rxjs/operators';
 import NoSleep from 'nosleep.js';
 import { packType, unpackOfType } from './typedPackets';
 import { createExercise } from './exercises/chords';
 import { toggleBehaviorSubject } from './toggleBehaviorSubject';
+import { OrderedSet } from 'immutable';
 
 const types = {
   EXERCISE: Symbol('EXERCISE'),
@@ -25,7 +26,13 @@ export const create = () => {
     }
   })
 
-  const parsedMessages$ = midi$.pipe(parse());
+  const allMidiInputNames$ = midiInputs$.pipe(
+    mergeMap(input => input.connected$.pipe(map(connected => ({ input, connected })))),
+    scan((acc, { input, connected }) => connected ? acc.add(input.name) : acc.delete(input.name), OrderedSet()),
+    map(orderedSet => orderedSet.toArray()),
+  );
+  const midiMessages$ = midiInputs$.pipe(mergeMap(input => input.messages$), share());
+  const parsedMessages$ = midiMessages$.pipe(parse());
   const keyboardKeyState$ = parsedMessages$.pipe(pressedKeys());
 
   const singleExercise$ = defer(() => of(createExercise()));
@@ -45,6 +52,7 @@ export const create = () => {
   );
 
   return {
+    allMidiInputNames$,
     keyboardKeyState$,
     exercise$: exercisesAndResults$.pipe(unpackOfType(types.EXERCISE)),
     solutions$: exercisesAndResults$.pipe(unpackOfType(types.RESULT)),

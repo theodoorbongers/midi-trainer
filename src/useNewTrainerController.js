@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import * as TrainerController from './TrainerController';
 
-export const useTrainerController = () => {
+export const useNewTrainerController = () => {
   const [controller, setController] = useState(null);
 
   useEffect(() => {
