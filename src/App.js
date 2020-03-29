@@ -10,6 +10,7 @@ const App = () => {
   const keyboardKeyState = useObservable(trainerController?.keyboardKeyState$) || Set();
   const exercise = useObservable(trainerController?.exercise$);
   const lastSolution = useObservable(trainerController?.solutions$);
+  const isWakeLockActive = useObservable(trainerController?.wakeLockActive$);
 
   return trainerController && (
     <svg
@@ -17,8 +18,9 @@ const App = () => {
       height="100%"
       viewBox="0 0 160 90"
       preserveAspectRatio="xMidYMid meet"
+      onClick={trainerController.onToggleWakeLock}
       style={{
-        backgroundColor: 'hsl(120, 5%, 60%)',
+        backgroundColor: isWakeLockActive ? 'hsl(120, 5%, 30%)' : 'hsl(120, 5%, 60%)',
       }}>
       <filter id="dropShadow" height="130%">
         <feGaussianBlur in="SourceAlpha" stdDeviation="1"/>
