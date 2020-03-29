@@ -3,22 +3,28 @@ import { useTrainerController } from './useTrainerController';
 import { useObservable } from './useObservable';
 import { Keyboard } from './Keyboard';
 import './App.css';
-import { Set } from 'immutable';
 
 const App = () => {
-  const trainerController = useTrainerController();
-  const keyboardKeyState = useObservable(trainerController?.keyboardKeyState$) || Set();
-  const exercise = useObservable(trainerController?.exercise$);
-  const lastSolution = useObservable(trainerController?.solutions$);
-  const isWakeLockActive = useObservable(trainerController?.wakeLockActive$);
+  const controller = useTrainerController();
 
-  return trainerController && (
+  return controller && (
+    <MainPanel controller={controller} />
+  );
+};
+
+const MainPanel = ({ controller }) => {
+  const keyboardKeyState = useObservable(controller.keyboardKeyState$);
+  const exercise = useObservable(controller.exercise$);
+  const lastSolution = useObservable(controller.solutions$);
+  const isWakeLockActive = useObservable(controller.wakeLockActive$);
+
+  return (
     <svg
       width="100%"
       height="100%"
       viewBox="0 0 160 90"
       preserveAspectRatio="xMidYMid meet"
-      onClick={trainerController.onToggleWakeLock}
+      onClick={controller.onToggleWakeLock}
       style={{
         backgroundColor: isWakeLockActive ? 'hsl(120, 5%, 30%)' : 'hsl(120, 5%, 60%)',
       }}>
@@ -41,6 +47,6 @@ const App = () => {
       </svg>
     </svg>
   );
-};
+}
 
 export default App;

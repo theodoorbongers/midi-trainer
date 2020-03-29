@@ -69,7 +69,7 @@ export const Keyboard = ({ lowestKey = 21, highestKey = 108, keyState, x, y, wid
       </g>
       <rect height="36.348648" id="blackKeyPressMask" style={{ "display": "inline", "opacity": "1", "fill": PRESS_MASK_COLOR, "mixBlendMode": PRESS_MASK_BLEND_MODE, "fillOpacity": "1", "strokeWidth": "0.26458332" }} width="5.57514" />
     </defs>
-    { sortBy(range(lowestKey, highestKey + 1), isBlackKey).map(keyNumber => <Key key={keyNumber} keyNumber={keyNumber} isPressed={keyState.has(keyNumber)} />) }
+    { sortBy(range(lowestKey, highestKey + 1), isBlackKey).map(keyNumber => <Key key={keyNumber} keyNumber={keyNumber} isPressed={keyState?.has(keyNumber)} />) }
   </svg>
 );
 
