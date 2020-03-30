@@ -1,6 +1,8 @@
 .statusPanel {
   display: flex;
   align-items: baseline;
+  cursor: pointer;
+  user-select: none;
 }
 
 .midiInputs {

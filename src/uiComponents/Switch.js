@@ -1,10 +1,10 @@
 import React from 'react';
-import classNames from 'classnames';
 import styles from './Switch.module.css';
+import ToggleButton from 'react-toggle-button';
 
-export const Switch = ({ label, checked, onChange }) => (
-  <label className={classNames(styles.switch, { [styles.checked]: checked })}>
-    {label}
-    <input type="checkbox" checked={checked} onChange={e => onChange(e.target.checked)} />
-  </label>
+export const Switch = ({ label, value, onChange }) => (
+  <div className={styles.switch} onClick={() => onChange(!value)}>
+    <span className={styles.label}>{label}</span>
+    <ToggleButton value={!!value} onToggle={currentValue => { onChange(!currentValue); }} />
+  </div>
 );

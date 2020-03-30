@@ -14,7 +14,7 @@ export const StatusPanel = ({ className }) => {
   return (
     <Panel className={classNames(className, styles.statusPanel)}>
       <div className={styles.midiInputs}>Connected MIDI input(s): { midiInputNames?.length ? midiInputNames.join(', ') : <i>none</i> }</div>
-      <div className={styles.wakeLock}><Switch label="wake locked" checked={!!wakeLockActive} onChange={controller.setWakeLock} /></div>
+      <div className={styles.wakeLock}><Switch label="prevent sleep mode" value={!!wakeLockActive} onChange={controller.setWakeLock} /></div>
     </Panel>
   );
 };
