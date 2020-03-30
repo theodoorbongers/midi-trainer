@@ -6,7 +6,6 @@ import { first, switchMap, share, repeat, publish, mergeMap, scan, map } from 'r
 import NoSleep from 'nosleep.js';
 import { packType, unpackOfType } from './typedPackets';
 import { createExercise } from './exercises/chords';
-import { toggleBehaviorSubject } from './toggleBehaviorSubject';
 import { OrderedSet } from 'immutable';
 
 const types = {
@@ -56,7 +55,7 @@ export const create = () => {
     keyboardKeyState$,
     exercise$: exercisesAndResults$.pipe(unpackOfType(types.EXERCISE)),
     solutions$: exercisesAndResults$.pipe(unpackOfType(types.RESULT)),
-    onToggleWakeLock: () => toggleBehaviorSubject(wakeLockSubject),
+    setWakeLock: active => wakeLockSubject.next(active),
     wakeLockActive$: from(wakeLockSubject),
   };
 };

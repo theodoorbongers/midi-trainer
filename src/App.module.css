@@ -9,13 +9,21 @@
   flex-direction: column;
 }
 
-.wakeLocked {
-  background-color: hsl(120, 5%, 60%);
+.app > * {
+  margin: 0 2vmin 2vmin 2vmin;
+}
+
+.app > :first-child {
+  margin-top: 2vmin;
 }
 
 .middleRow {
   display: flex;
   flex: 1 1 100%;
+}
+
+.middleRow > :not(:last-child) {
+  margin-right: 2vmin;
 }
 
 .main {

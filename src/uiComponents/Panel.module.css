@@ -2,7 +2,7 @@
   background-color: white;
   border: 1px solid black;
   box-sizing: border-box;
-  margin: 2vmin;
   box-shadow: 0.5vmin 0.5vmin 1vmin rgba(0, 0, 0, 0.2);
   padding: 1vmin;
+  border-radius: 0.3vmin;
 }

@@ -1,0 +1,12 @@
+.statusPanel {
+  display: flex;
+  align-items: baseline;
+}
+
+.midiInputs {
+  flex: 1 1 100%;
+}
+
+.wakeLock {
+  flex: 1 0 auto;
+}

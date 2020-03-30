@@ -1,0 +1,54 @@
+.switch {
+  display: inline-block;
+  border: 1px solid transparent;
+  border-radius: 0.2em;
+  padding: 0.3em 1em;
+  user-select: none;
+  background-color: white;
+  color: #aaa;
+}
+
+.switch:hover {
+  border-color: white #aaa #aaa white;
+}
+
+.switch.checked {
+  background-color: #eee;
+  color: black;
+  border-color: #777 white white #777;
+  transform: translate(0.1em, 0.1em);
+  animation: toggle 0.01s;
+}
+
+.switch:not(.checked) {
+  animation: untoggle 0.01s;
+}
+
+@keyframes toggle {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(0.1em, 0.1em);
+  }
+}
+
+@keyframes untoggle {
+  from {
+    transform: translate(0.1em, 0.1em);
+  }
+  to {
+    transform: translate(0, 0);
+  }
+}
+
+.switch > input {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}

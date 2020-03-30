@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { ControllerContext } from '../controllerContext';
 import { useObservable } from '../useObservable';
 import { Keyboard } from '../Keyboard';
-import { Panel } from './Panel';
+import { Panel } from '../uiComponents/Panel';
 
 export const KeyboardPanel = ({ className }) => {
   const controller = useContext(ControllerContext);
