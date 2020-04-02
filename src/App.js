@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNewTrainerController } from './useNewTrainerController';
 import styles from './App.module.css';
 import { ControllerContext } from './controllerContext';
@@ -26,10 +26,4 @@ const App = () => {
   );
 };
 
-export default () => {
-  const [visible, setVisible] = useState(true);
-  return <>
-    <button onClick={() => { setVisible(x => !x); }}>toggle</button>
-    { visible && <App /> }
-  </>;
-};
+export default App;

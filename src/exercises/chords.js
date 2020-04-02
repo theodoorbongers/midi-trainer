@@ -23,7 +23,7 @@ export const createExercise = ({ pressedKeys$ }) => {
   const chordIntervalsFromRoot = List(intervals).sort();
   const chordNotes = getChordNotes(rootNote, chordIntervalsFromRoot);
   
-  const getResult = () => concat(
+  const result$ = concat(
     pressedKeys$.pipe(
       flatMap(
         keys => {
@@ -51,7 +51,7 @@ export const createExercise = ({ pressedKeys$ }) => {
 
   return {
     displayName: getDisplayName(NOTE_NAMES[rootNote]),
-    getResult,
+    result$,
     consoleMessages$: from(consoleMessages$),
   }
 };

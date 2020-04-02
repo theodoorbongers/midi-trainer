@@ -46,13 +46,30 @@ export const create = () => {
   const pressedKeys$ = parsedMessages$.pipe(pressedKeys(), publishBehavior(OrderedSet()));
   subscriptions.add(pressedKeys$.connect());
 
+  const session = createSession(pressedKeys$);
+
+  return {
+    allMidiInputNames$,
+    keyboardKeyState$: pressedKeys$,
+    exercise$: session.exercisesAndResults$.pipe(unpackOfType(types.EXERCISE)),
+    solutions$: session.exercisesAndResults$.pipe(unpackOfType(types.RESULT)),
+    setWakeLock: active => wakeLockSubject.next(active),
+    wakeLockActive$: from(wakeLockSubject),
+    setConsoleVisible: visible => consoleVisibleSubject.next(visible),
+    consoleVisible$: from(consoleVisibleSubject),
+    allConsoleMessages$,
+    destroy: () => subscriptions.unsubscribe(),
+  };
+};
+
+const createSession = (pressedKeys$) => {
   const singleExercise$ = defer(() => of(createExercise({ pressedKeys$ })));
   const exercisesAndResults$ = singleExercise$.pipe(
     publish(
       exercise$ => merge(
         exercise$.pipe(packType(types.EXERCISE)),
         exercise$.pipe(
-          switchMap(exercise => exercise.getResult(parsedMessages$)),
+          switchMap(exercise => exercise.result$),
           packType(types.RESULT),
         )
       )
@@ -62,15 +79,6 @@ export const create = () => {
   );
 
   return {
-    allMidiInputNames$,
-    keyboardKeyState$: pressedKeys$,
-    exercise$: exercisesAndResults$.pipe(unpackOfType(types.EXERCISE)),
-    solutions$: exercisesAndResults$.pipe(unpackOfType(types.RESULT)),
-    setWakeLock: active => wakeLockSubject.next(active),
-    wakeLockActive$: from(wakeLockSubject),
-    setConsoleVisible: visible => consoleVisibleSubject.next(visible),
-    consoleVisible$: from(consoleVisibleSubject),
-    allConsoleMessages$,
-    destroy: () => subscriptions.unsubscribe(),
+    exercisesAndResults$,
   };
 };
