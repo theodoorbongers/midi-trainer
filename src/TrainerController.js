@@ -1,12 +1,12 @@
 import { midiInputs$ } from './midi/midi$';
 import { parse } from './midi/parse';
 import { pressedKeys } from './midi/pressedKeys';
-import { defer, of, merge, BehaviorSubject, from } from 'rxjs';
-import { first, switchMap, share, repeat, publish, mergeMap, scan, map } from 'rxjs/operators';
+import { defer, of, merge, BehaviorSubject, from, Subject, Subscriber } from 'rxjs';
+import { switchMap, share, repeat, publish, mergeMap, scan, map, publishBehavior, timestamp } from 'rxjs/operators';
 import NoSleep from 'nosleep.js';
 import { packType, unpackOfType } from './typedPackets';
 import { createExercise } from './exercises/chords';
-import { OrderedSet } from 'immutable';
+import { OrderedSet, List } from 'immutable';
 
 const types = {
   EXERCISE: Symbol('EXERCISE'),
@@ -16,14 +16,25 @@ const types = {
 const noSleep = new NoSleep();
 
 export const create = () => {
+  const subscriptions = new Subscriber();
+
+  const consoleSubject$ = new Subject();
+  const consoleMessages$ = consoleSubject$.pipe(timestamp());
+  const allConsoleMessages$ = consoleMessages$.pipe(scan((acc, message) => acc.push(message), List()), publishBehavior(List));
+  allConsoleMessages$.connect();
+
   const wakeLockSubject = new BehaviorSubject(false);
-  wakeLockSubject.subscribe((shouldBeLocked) => {
-    if (shouldBeLocked) {
-      noSleep.enable();
-    } else {
-      noSleep.disable();
-    }
-  })
+  subscriptions.add(
+    wakeLockSubject.subscribe((shouldBeLocked) => {
+      if (shouldBeLocked) {
+        noSleep.enable();
+      } else {
+        noSleep.disable();
+      }
+    })
+  );
+
+  const consoleVisibleSubject = new BehaviorSubject(false);
 
   const allMidiInputNames$ = midiInputs$.pipe(
     mergeMap(input => input.connected$.pipe(map(connected => ({ input, connected })))),
@@ -32,16 +43,16 @@ export const create = () => {
   );
   const midiMessages$ = midiInputs$.pipe(mergeMap(input => input.messages$), share());
   const parsedMessages$ = midiMessages$.pipe(parse());
-  const keyboardKeyState$ = parsedMessages$.pipe(pressedKeys());
+  const pressedKeys$ = parsedMessages$.pipe(pressedKeys(), publishBehavior(OrderedSet()));
+  subscriptions.add(pressedKeys$.connect());
 
-  const singleExercise$ = defer(() => of(createExercise()));
+  const singleExercise$ = defer(() => of(createExercise({ pressedKeys$ })));
   const exercisesAndResults$ = singleExercise$.pipe(
     publish(
       exercise$ => merge(
         exercise$.pipe(packType(types.EXERCISE)),
         exercise$.pipe(
           switchMap(exercise => exercise.getResult(parsedMessages$)),
-          first(),
           packType(types.RESULT),
         )
       )
@@ -52,10 +63,14 @@ export const create = () => {
 
   return {
     allMidiInputNames$,
-    keyboardKeyState$,
+    keyboardKeyState$: pressedKeys$,
     exercise$: exercisesAndResults$.pipe(unpackOfType(types.EXERCISE)),
     solutions$: exercisesAndResults$.pipe(unpackOfType(types.RESULT)),
     setWakeLock: active => wakeLockSubject.next(active),
     wakeLockActive$: from(wakeLockSubject),
+    setConsoleVisible: visible => consoleVisibleSubject.next(visible),
+    consoleVisible$: from(consoleVisibleSubject),
+    allConsoleMessages$,
+    destroy: () => subscriptions.unsubscribe(),
   };
 };

@@ -10,11 +10,13 @@ export const StatusPanel = ({ className }) => {
   const controller = useContext(ControllerContext);
   const midiInputNames = useObservable(controller.allMidiInputNames$);
   const wakeLockActive = useObservable(controller.wakeLockActive$);
+  const consoleVisible = useObservable(controller.consoleVisible$);
 
   return (
     <Panel className={classNames(className, styles.statusPanel)}>
       <div className={styles.midiInputs}>Connected MIDI input(s): { midiInputNames?.length ? midiInputNames.join(', ') : <i>none</i> }</div>
-      <div className={styles.wakeLock}><Switch label="prevent sleep mode" value={!!wakeLockActive} onChange={controller.setWakeLock} /></div>
+      <div className={styles.toggle}><Switch label="show console" value={!!consoleVisible} onChange={controller.setConsoleVisible} /></div>
+      <div className={styles.toggle}><Switch label="prevent sleep mode" value={!!wakeLockActive} onChange={controller.setWakeLock} /></div>
     </Panel>
   );
 };

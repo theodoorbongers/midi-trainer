@@ -9,6 +9,8 @@
   flex: 1 1 100%;
 }
 
-.wakeLock {
+.toggle {
   flex: 1 0 auto;
+  margin-left: 1em;
+  margin-right: 1em;
 }

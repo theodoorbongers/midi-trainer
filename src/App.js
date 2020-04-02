@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNewTrainerController } from './useNewTrainerController';
 import styles from './App.module.css';
 import { ControllerContext } from './controllerContext';
 import { MainPanel } from './panels/MainPanel';
 import { KeyboardPanel } from './panels/KeyboardPanel';
 import { StatusPanel } from './panels/StatusPanel';
+import { ConsolePanel } from './panels/ConsolePanel';
+import { useObservable } from './useObservable';
 
 const App = () => {
   const controller = useNewTrainerController();
+  const consoleVisible = useObservable(controller?.consoleVisible$);
 
   return controller && (
     <ControllerContext.Provider value={controller}>
@@ -15,6 +18,7 @@ const App = () => {
         <StatusPanel className={styles.status} />
         <div className={styles.middleRow}>
           <MainPanel className={styles.main} />
+          { consoleVisible && <ConsolePanel className={styles.console} /> }
         </div>
         <KeyboardPanel className={styles.keyboard} />
       </div>
@@ -22,4 +26,10 @@ const App = () => {
   );
 };
 
-export default App;
+export default () => {
+  const [visible, setVisible] = useState(true);
+  return <>
+    <button onClick={() => { setVisible(x => !x); }}>toggle</button>
+    { visible && <App /> }
+  </>;
+};

@@ -7,6 +7,12 @@ export const useNewTrainerController = () => {
   useEffect(() => {
     const createdController = TrainerController.create();
     setController(createdController);
+
+    return () => {
+      if (createdController.destroy) {
+        createdController.destroy();
+      }
+    }
   }, []);
 
   return controller;
