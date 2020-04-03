@@ -1,6 +1,6 @@
 import random from 'lodash.random';
 import { List } from 'immutable';
-import { first, flatMap, ignoreElements, finalize } from 'rxjs/operators';
+import { first, flatMap, ignoreElements } from 'rxjs/operators';
 import * as i from '../intervals';
 import sample from 'lodash.sample';
 import { Subject, from, concat } from 'rxjs';
@@ -46,7 +46,7 @@ export const createExercise = ({ pressedKeys$ }) => {
       ),
       first(),
     ),
-    pressedKeys$.pipe(first(keys => !keys.size), ignoreElements(), finalize(() => { console.log('THE END 2'); })),
+    pressedKeys$.pipe(first(keys => !keys.size), ignoreElements()),
   );
 
   return {

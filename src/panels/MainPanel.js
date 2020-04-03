@@ -4,9 +4,9 @@ import { ControllerContext } from '../controllerContext';
 import { Panel } from '../uiComponents/Panel';
 
 export const MainPanel = ({ className }) => {
-  const controller = useContext(ControllerContext);
-  const exercise = useObservable(controller.exercise$);
-  const lastSolution = useObservable(controller.solutions$);
+  const controller = useContext(ControllerContext) ;
+  const exercise = useObservable(controller.exercises$);
+  const lastSolution = useObservable(exercise?.result$);
 
   return (
     <Panel className={className}>
